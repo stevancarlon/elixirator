@@ -1,0 +1,95 @@
+<Layouts.app flash={@flash}>
+  <h1 class="sr-only">Mission fuel calculator</h1>
+
+  <section class="space-map" aria-label="Supported destinations: Earth, Moon, and Mars">
+    <div class="planet-stop earth-stop">
+      <div class="planet-visual">
+        <div class="planet earth">
+          <img src={~p"/images/planets/earth.jpg"} alt="" width="76" height="76" decoding="async" />
+        </div>
+      </div>
+      <div class="planet-caption">
+        <span>EARTH</span><small>9.807 m/s²</small>
+      </div>
+    </div>
+    <div class="planet-stop moon-stop">
+      <div class="planet-visual">
+        <div class="planet moon">
+          <img src={~p"/images/planets/moon.jpg"} alt="" width="52" height="52" decoding="async" />
+        </div>
+      </div>
+      <div class="planet-caption">
+        <span>MOON</span><small>1.620 m/s²</small>
+      </div>
+    </div>
+    <div class="planet-stop mars-stop">
+      <div class="planet-visual">
+        <div class="planet mars">
+          <img src={~p"/images/planets/mars.webp"} alt="" width="64" height="64" decoding="async" />
+        </div>
+      </div>
+      <div class="planet-caption">
+        <span>MARS</span><small>3.711 m/s²</small>
+      </div>
+    </div>
+  </section>
+
+  <div class="workspace">
+    <section class="planner" aria-labelledby="planner-heading">
+      <div class="section-heading">
+        <h2 id="planner-heading">Mission</h2>
+        <.mission_presets preset={@preset} />
+      </div>
+      <.form for={@form} id="mass-form" phx-change="mass" phx-submit="mass" class="mass-form">
+        <div class="flex items-center justify-between mb-3">
+          <label for="mission_mass" class="field-title">Spacecraft mass (without fuel)</label>
+        </div>
+        <div class="mass-input-wrap">
+          <.input
+            field={@form[:mass]}
+            type="number"
+            min="0.001"
+            max={Fuel.max_mass()}
+            step="any"
+            required
+            class="mission-input mass-input"
+            phx-debounce="250"
+          /><span class="unit">kg</span>
+        </div>
+      </.form>
+      <div class="path-heading">
+        <div class="flex items-center gap-2">
+          <h3>Flight path</h3>
+          <span id="step-count" class="count">{@step_count} steps</span>
+        </div>
+        <button id="clear-route" phx-click="clear" class="text-button" disabled={@step_count == 0}>
+          Clear route
+        </button>
+      </div>
+
+      <div id="flight-steps" phx-update="stream" class="flight-steps">
+        <div id="empty-route" class="hidden only:block empty-route">No flight steps.</div>
+        <.flight_step
+          :for={{dom_id, step} <- @streams.steps}
+          id={dom_id}
+          step={step}
+          step_count={@step_count}
+        />
+      </div>
+      <button
+        id="add-step"
+        phx-click="add-step"
+        disabled={@step_count >= Fuel.max_steps()}
+        class="add-step"
+      >
+        <.icon name="hero-plus" class="size-4" />{if @step_count >= Fuel.max_steps(),
+          do: "#{Fuel.max_steps()}-step limit reached",
+          else: "Add flight step"}
+      </button>
+    </section>
+
+    <aside class="results-column">
+      <.fuel_summary result={@result} />
+    </aside>
+  </div>
+</Layouts.app>
