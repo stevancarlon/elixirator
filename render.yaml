@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: elixirator
+    runtime: elixir
+    plan: free
+    region: virginia
+    buildCommand: ./build.sh
+    startCommand: _build/prod/rel/elixirator/bin/elixirator start
+    healthCheckPath: /
+    envVars:
+      - key: ELIXIR_VERSION
+        value: 1.18.4
+      - key: ERLANG_VERSION
+        value: "27.3"
+      - key: MIX_ENV
+        value: prod
+      - key: PHX_SERVER
+        value: "true"
+      - key: SECRET_KEY_BASE
+        generateValue: true
