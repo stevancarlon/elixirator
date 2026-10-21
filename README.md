@@ -2,6 +2,8 @@
 
 Interplanetary fuel calculator built with Elixir, Phoenix 1.8, and LiveView. Edit spacecraft mass and flight steps for Earth, Moon, and Mars to calculate fuel in real time. No database required.
 
+**[Try the live demo](https://elixirator.onrender.com)** — hosted on Render's free plan; the first visit after inactivity may take about a minute to load.
+
 ## Run
 
 Requires Elixir and Erlang/OTP. CI uses Elixir 1.18.4 and OTP 27.3.
